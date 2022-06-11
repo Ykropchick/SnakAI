@@ -1,11 +1,14 @@
 import pygame as pg
 import random
+from direction_pattern import direction_pattern
 
 
 class Snake:
     def __init__(self):
         self.width = 20
         self.height = 20
+
+        self.dir = 'w'
 
         self.head_pos = (random.randrange(30, 300), random.randrange(30, 300))
         self.head_rect = None
@@ -23,8 +26,10 @@ class Snake:
     def lengthen_tail(self):
         self.tails.append((self.tails[-1][0], self.tails[-1][1] - self.height))
 
-    def move(self, x, y):
-        self.head_pos = (self.head_pos[0] + x, self.head_pos[1] + y)
+    def move(self):
+        self.head_pos = (self.head_pos[0] + direction_pattern[self.dir][0],
+                         self.head_pos[1] + direction_pattern[self.dir][1])
+
         self.tails.pop()
         self.tails.insert(0, self.head_pos)
 

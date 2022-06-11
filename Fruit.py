@@ -5,8 +5,8 @@ import random
 class Fruit:
     def __init__(self, win_width, win_height):
 
-        self.win_width = win_width
-        self.win_height = win_height
+        self.win_width = win_width - 200
+        self.win_height = win_height - 200
 
         self.width = 20
         self.height = 20
