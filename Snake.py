@@ -10,7 +10,8 @@ class Snake:
 
         self.dir = 'w'
 
-        self.head_pos = (random.randrange(30, 300), random.randrange(30, 300))
+        self.head_pos = (random.randrange(30, 1000), random.randrange(30, 1000))
+        # self.head_pos = (300, 300)
         self.head_rect = None
 
         self.number_tails = 0

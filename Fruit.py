@@ -14,6 +14,7 @@ class Fruit:
         self.color = "lightgreen"
 
         self.pos = (random.randrange(0, self.win_width), random.randrange(0, self.win_height))
+        # self.pos = (300, 300)
 
     def new_pos(self):
         self.pos = (random.randrange(0, self.win_width), random.randrange(0, self.win_height))

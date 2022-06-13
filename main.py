@@ -4,6 +4,7 @@ from Snake import Snake
 from Fruit import Fruit
 from direction_pattern import direction_pattern
 import os
+from neat.math_util import softmax
 
 WIDTH = 1200
 HEIGHT = 1200
@@ -33,12 +34,18 @@ def check_out_boarder(snake):
     return True
 
 
+def dist_food_head(snake, fruit):
+    return round(((snake.head_pos[0] - fruit.pos[0]) ** 2 + (snake.head_pos[1] - fruit.pos[1]) ** 2) ** 0.5)
+
+
 def main(genomes, config):
 
     nets = []
     ge = []
     snakes = []
     fruits = []
+    prev_dist = []
+    number = 0
 
     for _, g in genomes:
         net = neat.nn.FeedForwardNetwork.create(g, config)
@@ -52,13 +59,17 @@ def main(genomes, config):
 
     while running:
 
-        clock.tick(30)
+        clock.tick(60)
 
         if len(snakes) < 1:
             running = False
-        count = 0
+
         for i, snake in enumerate(snakes):
-            output = nets[i].activate((snake.head_pos[0], snake.head_pos[1], fruits[i].pos[0], fruits[i].pos[1]))
+            # ge[i].fitness += 1
+            output = nets[i].activate((dist_food_head(snake, fruits[i]), snake.head_pos[0], snake.head_pos[1], fruits[i].pos[0], fruits[i].pos[1]))
+            # softmax_res = softmax(output)
+            # index = softmax_res.index(max(softmax_res))
+            # print(f'index = {index}, softmax = {softmax_res}')
             if output[0] > 0.5:
                 snake.dir = 'w'
             elif output[0] > 0:
@@ -67,18 +78,21 @@ def main(genomes, config):
                 snake.dir = 'a'
             elif output[0] < -0.5:
                 snake.dir = 'd'
-            else:
-                print("Error")
 
         for snake in snakes:
             snake.move()
+
+        for fruit, snake in zip(fruits, snakes):
+            dist_food_head(snake, fruit)
 
         draw_window(screen, snakes, fruits)
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
-
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_q:
+                    running = False
         for i in range(len(snakes)):
             if snakes[i].crossing_fruit(fruits[i].fruit):
                 ge[i].fitness += 1
